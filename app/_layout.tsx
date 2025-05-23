@@ -3,6 +3,7 @@ import { useAssets } from "expo-asset";
 import * as SplashScreen from "expo-splash-screen";
 import { Stack } from "expo-router";
 import { useEffect } from "react";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
 const fontsToLoad = {
   SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -48,5 +49,9 @@ export default function RootLayout() {
   if (!fontLoaded || !imageAssets) {
     return null;
   }
-  return <Stack screenOptions={{ headerShown: false }} />;
+  return (
+    <SafeAreaProvider>
+      <Stack screenOptions={{ headerShown: false }} />
+    </SafeAreaProvider>
+  );
 }
