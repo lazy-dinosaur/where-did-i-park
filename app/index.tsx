@@ -1,7 +1,7 @@
 import InfoComponent from "./info-component";
 import ButtonComponent from "./button-component";
 import CameraComponent from "./camera-component";
-import ScreenWrapper from "@/component/screen-wrapper";
+import ScreenWrapper from "@/components/screen-wrapper";
 import { useEffect, useRef, useState } from "react";
 import { useCameraPermissions, CameraView } from "expo-camera";
 import { Text, View, Button } from "react-native";

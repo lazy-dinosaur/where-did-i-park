@@ -1,10 +1,11 @@
 import { getData } from "@/utils/storage";
 import { useEffect, useState } from "react";
 import { Text, View, Image } from "react-native";
+import ImageComponent from "./image-component";
+import MapComponent from "./map-component";
 export default function Parked() {
   const [image, setImage] = useState(null);
   const [location, setLocation] = useState(null);
-  const [heading, setHeading] = useState(null);
 
   useEffect(() => {
     getData("image").then((res) => {
@@ -22,17 +23,8 @@ export default function Parked() {
 
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
-      <View></View>
-      <View style={{ width: "100%", height: "50%" }}>
-        <Image
-          source={{ uri: image ? image : "" }}
-          style={{
-            width: "100%",
-            height: "100%",
-            resizeMode: "contain",
-          }}
-        />
-      </View>
+      <MapComponent location={location} />
+      <ImageComponent url={image} />
     </View>
   );
 }
