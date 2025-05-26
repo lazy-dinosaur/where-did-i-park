@@ -235,7 +235,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
           pitch: 0,
           heading: 0,
           altitude: 180,
-          zoom: 15,
+          zoom: 18,
         }}
       >
         {location && (
