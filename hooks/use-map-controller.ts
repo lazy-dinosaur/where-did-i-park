@@ -36,6 +36,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const dragTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
+
   // 안전한 mapRef 접근 함수
   const safeMapRef = useCallback(() => {
     if (!isMountedRef.current || !mapReady || !mapRef.current) {
@@ -54,7 +55,6 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
     },
     [],
   );
-
   // 카메라 업데이트 함수
   const updateCamera = useCallback(
     async (animated = false) => {
@@ -93,6 +93,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       safeMapRef,
     ],
   );
+
   // 초기 지도 핏
   const fitMapToShowBothLocations = useCallback(() => {
     const map = safeMapRef();
@@ -120,7 +121,6 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       console.warn("지도 핏 실패:", error);
     }
   }, [userLocation, parkedLocation, isInitialized, safeMapRef]);
-
   // 맵 준비 완료 핸들러
   const handleMapReady = useCallback(() => {
     console.log("맵이 준비되었습니다");
@@ -157,6 +157,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       });
     }, 1000);
   }, [updateCamera]);
+
   // 위치 추적 시작
   const startTracking = useCallback(async () => {
     if (!isMountedRef.current) return;
@@ -179,7 +180,6 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
         }
       },
     );
-
     const headSubscription = await watchHeadingAsync(
       (headingData) => {
         if (
@@ -203,6 +203,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       headSubscription?.remove();
     }
   }, []);
+
   // 초기 설정
   useEffect(() => {
     isMountedRef.current = true;
@@ -241,7 +242,6 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       if (dragTimeoutRef.current) clearTimeout(dragTimeoutRef.current);
     };
   }, [startTracking]);
-
   // 초기 지도 핏
   useEffect(() => {
     if (!isMountedRef.current || !mapReady) return;
@@ -262,6 +262,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
     isInitialized,
     mapReady,
   ]);
+
   // 카메라 실시간 업데이트
   useEffect(() => {
     if (!isMountedRef.current || !mapReady) return;
