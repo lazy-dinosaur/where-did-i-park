@@ -30,6 +30,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
   const [drag, setDrag] = useState(false);
   const [isInitialized, setIsInitialized] = useState(false);
   const [mapReady, setMapReady] = useState(false);
+  const [isCameraUpdatePaused, setIsCameraUpdatePaused] = useState(false);
 
   // Refs
   const mapRef = useRef<MapView>(null);
@@ -121,6 +122,77 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       console.warn("지도 핏 실패:", error);
     }
   }, [userLocation, parkedLocation, isInitialized, safeMapRef]);
+
+  // 수동 지도 핏 (버튼 클릭 시 사용)
+  const manualFitToCoordinates = useCallback(async () => {
+    const map = safeMapRef();
+    if (!map || !userLocation || !parkedLocation) return;
+
+    try {
+      // 카메라 업데이트 일시 중단
+      setIsCameraUpdatePaused(true);
+
+      const coordinates = [
+        {
+          latitude: userLocation.coords.latitude,
+          longitude: userLocation.coords.longitude,
+        },
+        {
+          latitude: parkedLocation.coords.latitude,
+          longitude: parkedLocation.coords.longitude,
+        },
+      ];
+
+      // 1단계: fitToCoordinates로 전체 보기
+      map.fitToCoordinates(coordinates, {
+        edgePadding: { top: 100, right: 100, bottom: 100, left: 100 },
+        animated: true,
+      });
+
+      // 2단계: fitToCoordinates 애니메이션 완료 대기 후 중간점으로 애니메이션 이동
+      setTimeout(async () => {
+        if (!isMountedRef.current) return;
+
+        try {
+          const centerPoint = getMiddlePoint(userLocation, parkedLocation);
+          const currentHeading =
+            Platform.OS === "android"
+              ? deviceMotionHeading || 0
+              : heading?.trueHeading || 0;
+
+          const curCamera = await map.getCamera();
+          const newCamera = {
+            ...curCamera,
+            center: centerPoint,
+            heading: currentHeading,
+          };
+
+          // 애니메이션이 있는 카메라 이동
+          map.animateCamera(newCamera, { duration: 500 });
+
+          // 3단계: 애니메이션 완료 후 일반 setCamera 동작 재개
+          setTimeout(() => {
+            if (isMountedRef.current) {
+              setIsCameraUpdatePaused(false);
+            }
+          }, 500);
+        } catch (error) {
+          console.warn("중간점 카메라 이동 실패:", error);
+          setIsCameraUpdatePaused(false);
+        }
+      }, 1000);
+    } catch (error) {
+      console.warn("수동 지도 핏 실패:", error);
+      setIsCameraUpdatePaused(false);
+    }
+  }, [
+    userLocation,
+    parkedLocation,
+    safeMapRef,
+    getMiddlePoint,
+    deviceMotionHeading,
+    heading,
+  ]);
   // 맵 준비 완료 핸들러
   const handleMapReady = useCallback(() => {
     console.log("맵이 준비되었습니다");
@@ -267,7 +339,13 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
   useEffect(() => {
     if (!isMountedRef.current || !mapReady) return;
 
-    if (isInitialized && !drag && userLocation && parkedLocation) {
+    if (
+      isInitialized &&
+      !drag &&
+      !isCameraUpdatePaused &&
+      userLocation &&
+      parkedLocation
+    ) {
       updateCamera();
     }
   }, [
@@ -275,6 +353,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
     deviceMotionHeading,
     isInitialized,
     drag,
+    isCameraUpdatePaused,
     updateCamera,
     mapReady,
   ]);
@@ -288,5 +367,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
     handleMapReady,
     handleTouchStart,
     handleTouchEnd,
+    manualFitToCoordinates,
+    isCameraUpdatePaused,
   };
 };
