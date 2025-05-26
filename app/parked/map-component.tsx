@@ -1,6 +1,5 @@
 import { LocationObject } from "expo-location";
-import * as React from "react";
-import { View, Text } from "react-native";
+import { View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useMapController } from "@/hooks/use-map-controller";
 
@@ -9,16 +8,21 @@ import { useMapController } from "@/hooks/use-map-controller";
 const MapComponent = ({ location }: { location: LocationObject | null }) => {
   const {
     mapRef,
-    userLocation,
     parkedLocation,
-    mapReady,
     handleMapReady,
     handleTouchStart,
     handleTouchEnd,
   } = useMapController({ parkedLocation: location });
 
   return (
-    <View style={{ flex: 1, backgroundColor: "black" }}>
+    <View
+      style={{
+        flex: 1,
+        backgroundColor: "black",
+        borderRadius: 25,
+        overflow: "hidden",
+      }}
+    >
       <MapView
         ref={mapRef}
         style={{ width: "100%", height: "100%" }}
@@ -38,7 +42,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
           zoom: 18,
         }}
       >
-        {parkedLocation && mapReady && (
+        {parkedLocation && (
           <Marker
             coordinate={{
               latitude: parkedLocation.coords.latitude,
