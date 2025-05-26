@@ -1,7 +1,10 @@
 import { LocationObject } from "expo-location";
-import { View } from "react-native";
+import * as React from "react";
+import { View, Text } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useMapController } from "@/hooks/use-map-controller";
+
+// 에러 폴백 컴포넌트
 
 const MapComponent = ({ location }: { location: LocationObject | null }) => {
   const {
@@ -25,14 +28,17 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
         onTouchEnd={handleTouchEnd}
         onMapReady={handleMapReady}
         initialCamera={{
-          center: { longitude: 0, latitude: 0 },
+          center: {
+            longitude: parkedLocation?.coords.longitude || 0,
+            latitude: parkedLocation?.coords.latitude || 0,
+          },
           pitch: 0,
           heading: 0,
           altitude: 180,
           zoom: 18,
         }}
       >
-        {parkedLocation && (
+        {parkedLocation && mapReady && (
           <Marker
             coordinate={{
               latitude: parkedLocation.coords.latitude,
