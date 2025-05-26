@@ -20,6 +20,7 @@ export default function Parked() {
     console.log("image", image);
     console.log("location", location);
   }, [image, location]);
+  if (!image && !location) return <View />;
 
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
