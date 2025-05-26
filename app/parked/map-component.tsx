@@ -28,6 +28,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
         ref={mapRef}
         style={{ width: "100%", height: "100%" }}
         showsUserLocation
+        showsMyLocationButton={false}
         followsUserLocation={false}
         scrollEnabled={true}
         onTouchStart={handleTouchStart}
