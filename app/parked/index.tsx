@@ -7,6 +7,7 @@ import {
   Alert,
   StyleSheet,
   ScrollView,
+  Image,
 } from "react-native";
 import ImageComponent from "./image-component";
 import MapComponent from "./map-component";
@@ -82,14 +83,24 @@ export default function Parked() {
           style={[
             styles.header,
             {
+              backgroundColor: colors.surface,
               borderBottomColor: colors.border,
             },
           ]}
         >
+          {/* 실제 로고 이미지 */}
+          <View style={styles.headerLogo}>
+            <Image
+              source={require("../../assets/images/잊지마차.png")}
+              style={styles.headerLogoImage}
+              resizeMode="contain"
+            />
+          </View>
+          
           <Text
             style={[
               styles.headerTitle,
-              { color: isDark ? colors.text : "black" },
+              { color: colors.text },
             ]}
           >
             주차 정보
@@ -97,9 +108,7 @@ export default function Parked() {
           <Text
             style={[
               styles.headerSubtitle,
-              {
-                color: isDark ? colors.textSecondary : "rgba(0,0,0,0.9)",
-              },
+              { color: colors.textSecondary },
             ]}
           >
             저장된 위치와 메모를 확인하세요
@@ -175,46 +184,34 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   header: {
-    paddingVertical: 10,
+    paddingVertical: 25,
     paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    shadowColor: "#1E3A8A",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
+    alignItems: "center",
   },
   headerLogo: {
     alignItems: "center",
     marginBottom: 15,
-    position: "relative",
   },
-  headerCar: {
-    width: 40,
-    height: 25,
-    backgroundColor: "#FFD700",
-    borderRadius: 15,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "#1E3A8A",
-    marginBottom: 5,
-  },
-  headerCarFace: {
-    fontSize: 12,
-    color: "#1E3A8A",
-    fontWeight: "bold",
-  },
-  headerBubble: {
-    backgroundColor: "#4A90E2",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 15,
-    position: "absolute",
-    top: -25,
-    right: -20,
-  },
-  headerBubbleText: {
-    color: "#FFFFFF",
-    fontSize: 12,
-    fontWeight: "bold",
+  headerLogoImage: {
+    width: 60,
+    height: 50,
+    shadowColor: "#1E3A8A",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   headerTitle: {
     fontSize: 24,

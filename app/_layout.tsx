@@ -41,10 +41,10 @@ export default function RootLayout() {
 
   // 모든 에셋이 로드되면 스플래시 스크린 숨기기
   useEffect(() => {
-    if (fontLoaded && imageError) {
+    if (fontLoaded && imageAssets) {
       SplashScreen.hideAsync();
     }
-  }, [fontLoaded, imageError]);
+  }, [fontLoaded, imageAssets]);
 
   if (!fontLoaded || !imageAssets) {
     return null;

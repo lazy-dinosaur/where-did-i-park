@@ -4,7 +4,7 @@ import CameraComponent from "./camera-component";
 import ScreenWrapper from "@/components/screen-wrapper";
 import { useEffect, useRef, useState } from "react";
 import { useCameraPermissions, CameraView } from "expo-camera";
-import { Text, View, Pressable, StyleSheet } from "react-native";
+import { Text, View, Pressable, StyleSheet, Image } from "react-native";
 import { useForegroundPermissions } from "expo-location";
 import { useRouter } from "expo-router";
 import { getData } from "@/utils/storage";
@@ -67,10 +67,12 @@ export default function Index() {
             },
           ]}
         >
-          <View
-            style={[styles.logoContainer, { backgroundColor: colors.surface }]}
-          >
-            {/* 로고의 노란 자동차 */}
+          <View style={styles.logoImageContainer}>
+            <Image
+              source={require("../assets/images/잊지마차.png")}
+              style={styles.logoImage}
+              resizeMode="contain"
+            />
           </View>
 
           <Text style={[styles.appTitle, { color: colors.text }]}>
@@ -249,20 +251,16 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 5,
   },
-  // 새로운 로고 스타일
-  logoContainer: {
+  // 로고 이미지 스타일
+  logoImageContainer: {
     alignItems: "center",
     marginBottom: 20,
     paddingTop: 10,
   },
-  speechBubble: {
-    backgroundColor: "#4A90E2",
-    paddingHorizontal: 20,
-    paddingVertical: 12,
-    borderRadius: 25,
-    marginBottom: 10,
-    position: "relative",
-    shadowColor: "#000",
+  logoImage: {
+    width: 120,
+    height: 100,
+    shadowColor: "#1E3A8A",
     shadowOffset: {
       width: 0,
       height: 4,
@@ -270,92 +268,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 5,
-  },
-  speechBubbleText: {
-    color: "#FFFFFF",
-    fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
-  },
-  speechBubbleTail: {
-    position: "absolute",
-    bottom: -8,
-    left: "50%",
-    marginLeft: -8,
-    width: 0,
-    height: 0,
-    borderLeftWidth: 8,
-    borderRightWidth: 8,
-    borderTopWidth: 8,
-    borderLeftColor: "transparent",
-    borderRightColor: "transparent",
-    borderTopColor: "#4A90E2",
-  },
-  carContainer: {
-    width: 90,
-    height: 60,
-    backgroundColor: "#FFD700",
-    borderRadius: 30,
-    position: "relative",
-    borderWidth: 3,
-    borderColor: "#1E3A8A",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.2,
-    shadowRadius: 10,
-    elevation: 8,
-  },
-  carWindow: {
-    position: "absolute",
-    top: 8,
-    left: 15,
-    width: 60,
-    height: 25,
-    backgroundColor: "#87CEEB",
-    borderRadius: 15,
-    borderWidth: 2,
-    borderColor: "#1E3A8A",
-  },
-  carFace: {
-    position: "absolute",
-    bottom: 8,
-    left: "50%",
-    marginLeft: -15,
-    width: 30,
-    height: 15,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  carEyes: {
-    fontSize: 12,
-    color: "#1E3A8A",
-    fontWeight: "bold",
-    marginBottom: -2,
-  },
-  carMouth: {
-    fontSize: 10,
-    color: "#1E3A8A",
-    fontWeight: "bold",
-  },
-  carWheels: {
-    position: "absolute",
-    bottom: -8,
-    left: 0,
-    right: 0,
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingHorizontal: 10,
-  },
-  wheel: {
-    width: 16,
-    height: 16,
-    backgroundColor: "#1E3A8A",
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: "#87CEEB",
   },
   appIcon: {
     fontSize: 40,
