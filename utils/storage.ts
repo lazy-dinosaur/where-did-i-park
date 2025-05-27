@@ -3,7 +3,7 @@ import { LocationObject } from "expo-location";
 
 export const storeData = async (data: {
   key: string;
-  value: string | { [k: string]: string } | LocationObject;
+  value: string | { [k: string]: string } | LocationObject | string[];
 }) => {
   let value;
   if (typeof data.value !== "object") {

@@ -1,9 +1,10 @@
 import { getData } from "@/utils/storage";
 import { useEffect, useState } from "react";
-import { Text, View, Image } from "react-native";
+import { View } from "react-native";
 import ImageComponent from "./image-component";
 import MapComponent from "./map-component";
 import ScreenWrapper from "@/components/screen-wrapper";
+import MemoComponent from "./memo-component";
 export default function Parked() {
   const [image, setImage] = useState(null);
   const [location, setLocation] = useState(null);
@@ -27,11 +28,7 @@ export default function Parked() {
     <ScreenWrapper>
       <View style={{ flex: 1, justifyContent: "center" }}>
         <MapComponent location={location} />
-        <View style={{}}>
-          <View>
-            <Text>ddd</Text>
-          </View>
-        </View>
+        <MemoComponent />
         <ImageComponent url={image} />
         <View style={{ flex: 1 }}></View>
       </View>
