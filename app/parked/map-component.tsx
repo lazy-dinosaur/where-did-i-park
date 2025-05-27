@@ -6,8 +6,9 @@ import {
   StyleSheet,
   Modal,
   Pressable,
+  Platform,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, MapType } from "react-native-maps";
 import { useMapController } from "@/hooks/use-map-controller";
 import { useTheme } from "@/hooks/use-theme";
 import { useState } from "react";
@@ -26,6 +27,65 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
 
   const { colors, isDark } = useTheme();
   const [showFullscreen, setShowFullscreen] = useState(false);
+
+  // 플랫폼별 맵 설정
+  const getMapProps = () => {
+    const baseProps = {
+      ref: mapRef,
+      style: styles.map,
+      initialRegion: initialRegion,
+      showsUserLocation: true,
+      showsMyLocationButton: false,
+      showsCompass: false,
+      followsUserLocation: false,
+      scrollEnabled: true,
+      zoomEnabled: true,
+      rotateEnabled: true,
+      onTouchStart: handleTouchStart,
+      onTouchEnd: handleTouchEnd,
+      onMapReady: handleMapReady,
+      showsPointsOfInterest: true,
+      showsBuildings: true,
+      showsTraffic: false,
+    };
+
+    // iOS에서만 mapType 속성 추가
+    if (Platform.OS === 'ios') {
+      return {
+        ...baseProps,
+        mapType: (isDark ? "mutedStandard" : "standard") as MapType,
+      };
+    }
+
+    return baseProps;
+  };
+
+  const getFullscreenMapProps = () => {
+    const baseProps = {
+      style: styles.fullscreenMap,
+      initialRegion: initialRegion,
+      showsUserLocation: true,
+      showsMyLocationButton: true,
+      showsCompass: false,
+      followsUserLocation: false,
+      scrollEnabled: true,
+      zoomEnabled: true,
+      rotateEnabled: true,
+      showsPointsOfInterest: true,
+      showsBuildings: true,
+      showsTraffic: false,
+    };
+
+    // iOS에서만 mapType 속성 추가
+    if (Platform.OS === 'ios') {
+      return {
+        ...baseProps,
+        mapType: (isDark ? "mutedStandard" : "standard") as MapType,
+      };
+    }
+
+    return baseProps;
+  };
 
   // 거리 계산
   const getDistance = () => {
@@ -72,23 +132,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
     <>
       <View style={styles.container}>
         <MapView
-          ref={mapRef}
-          style={styles.map}
-          initialRegion={initialRegion}
-          showsUserLocation={true}
-          showsMyLocationButton={false}
-          showsCompass={false}
-          followsUserLocation={false}
-          scrollEnabled={true}
-          zoomEnabled={true}
-          rotateEnabled={true}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          onMapReady={handleMapReady}
-          mapType={isDark ? "mutedStandard" : "standard"}
-          showsPointsOfInterest={true}
-          showsBuildings={true}
-          showsTraffic={false}
+          {...getMapProps()}
         >
           <Marker
             coordinate={{
@@ -162,19 +206,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
           ]}
         >
           <MapView
-            style={styles.fullscreenMap}
-            initialRegion={initialRegion}
-            showsUserLocation={true}
-            showsMyLocationButton={true}
-            showsCompass={false}
-            followsUserLocation={false}
-            scrollEnabled={true}
-            zoomEnabled={true}
-            rotateEnabled={true}
-            mapType={isDark ? "mutedStandard" : "standard"}
-            showsPointsOfInterest={true}
-            showsBuildings={true}
-            showsTraffic={false}
+            {...getFullscreenMapProps()}
           >
             <Marker
               coordinate={{

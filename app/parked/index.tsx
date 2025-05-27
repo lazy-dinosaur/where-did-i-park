@@ -10,7 +10,7 @@ import {
   Image,
   BackHandler,
 } from "react-native";
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ImageComponent from "./image-component";
 import MapComponent from "./map-component";
 import ScreenWrapper from "@/components/screen-wrapper";
@@ -46,21 +46,22 @@ export default function Parked() {
         Alert.alert(
           "🚗 주차 정보",
           "차를 찾으셨나요? '차를 찾았어요!' 버튼을 눌러주세요.",
-          [
-            { text: "확인", style: "default" }
-          ]
+          [{ text: "확인", style: "default" }],
         );
         return true; // 뒤로가기 동작을 차단
       };
 
       // Android 하드웨어 뒤로가기 핸들러 등록
-      const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+      const backHandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        onBackPress,
+      );
 
       return () => {
         // 컴포넌트 언마운트 시 핸들러 제거
         backHandler.remove();
       };
-    }, [])
+    }, []),
   );
 
   const handleFoundCar = () => {
@@ -106,90 +107,74 @@ export default function Parked() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ScreenWrapper backgroundColor={colors.background}>
         <View style={styles.container}>
-        {/* 헤더 */}
-        <View
-          style={[
-            styles.header,
-            {
-              backgroundColor: colors.surface,
-              borderBottomColor: colors.border,
-            },
-          ]}
-        >
-          {/* 실제 로고 이미지 */}
-          <View style={styles.headerLogo}>
-            <Image
-              source={require("../../assets/images/잊지마차.png")}
-              style={styles.headerLogoImage}
-              resizeMode="contain"
-            />
-          </View>
-          
-          <Text
-            style={[
-              styles.headerTitle,
-              { color: colors.text },
-            ]}
-          >
-            주차 정보
-          </Text>
-          <Text
-            style={[
-              styles.headerSubtitle,
-              { color: colors.textSecondary },
-            ]}
-          >
-            저장된 위치와 메모를 확인하세요
-          </Text>
-        </View>
+          {/* 헤더 */}
+          <View style={[styles.header]}>
+            {/* 실제 로고 이미지 */}
+            {/* <View style={styles.headerLogo}> */}
+            {/*   <Image */}
+            {/*     source={require("../../assets/images/잊지마차.png")} */}
+            {/*     style={styles.headerLogoImage} */}
+            {/*     resizeMode="contain" */}
+            {/*   /> */}
+            {/* </View> */}
 
-        {/* 콘텐츠 영역 */}
-        <ScrollView
-          style={[styles.content]}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={[styles.section, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              📍 위치
+            <Text style={[styles.headerTitle, { color: colors.text }]}>
+              주차 정보
             </Text>
-            <MapComponent location={location} />
-          </View>
-
-          <View style={[styles.section, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              📝 메모
+            <Text
+              style={[styles.headerSubtitle, { color: colors.textSecondary }]}
+            >
+              저장된 위치와 메모를 확인하세요
             </Text>
-            <MemoComponent />
           </View>
 
-          <View style={[styles.section, { backgroundColor: colors.surface }]}>
-            <Text style={[styles.sectionTitle, { color: colors.text }]}>
-              📸 사진
-            </Text>
-            <ImageComponent url={image} />
-          </View>
-        </ScrollView>
-
-        {/* 하단 버튼 영역 */}
-        <View style={[styles.bottomContainer]}>
-          <Pressable
-            onPress={handleFoundCar}
-            style={[
-              styles.foundButton,
-              {
-                backgroundColor: colors.success,
-                shadowColor: colors.success,
-              },
-            ]}
+          {/* 콘텐츠 영역 */}
+          <ScrollView
+            style={[styles.content]}
+            showsVerticalScrollIndicator={false}
           >
-            <View style={styles.foundButtonContent}>
-              <Text style={styles.foundButtonIcon}>🚗</Text>
-              <Text style={styles.foundButtonText}>차를 찾았어요!</Text>
+            <View style={[styles.section, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                📍 위치
+              </Text>
+              <MapComponent location={location} />
             </View>
-          </Pressable>
+
+            <View style={[styles.section, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                📝 메모
+              </Text>
+              <MemoComponent />
+            </View>
+
+            <View style={[styles.section, { backgroundColor: colors.surface }]}>
+              <Text style={[styles.sectionTitle, { color: colors.text }]}>
+                📸 사진
+              </Text>
+              <ImageComponent url={image} />
+            </View>
+          </ScrollView>
+
+          {/* 하단 버튼 영역 */}
+          <View style={[styles.bottomContainer]}>
+            <Pressable
+              onPress={handleFoundCar}
+              style={[
+                styles.foundButton,
+                {
+                  backgroundColor: colors.success,
+                  shadowColor: colors.success,
+                },
+              ]}
+            >
+              <View style={styles.foundButtonContent}>
+                <Text style={styles.foundButtonIcon}>🚗</Text>
+                <Text style={styles.foundButtonText}>차를 찾았어요!</Text>
+              </View>
+            </Pressable>
+          </View>
         </View>
-      </View>
-    </ScreenWrapper>
+      </ScreenWrapper>
     </GestureHandlerRootView>
   );
 }
