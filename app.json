@@ -9,14 +9,16 @@
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "userInterfaceStyle": "automatic"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/잊지마차.png",
         "backgroundColor": "#4A90E2"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "userInterfaceStyle": "automatic"
     },
     "web": {
       "bundler": "metro",
@@ -31,7 +33,13 @@
           "image": "./assets/images/잊지마차.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#E3F2FD"
+          "backgroundColor": "#E3F2FD",
+          "dark": {
+            "image": "./assets/images/잊지마차.png",
+            "backgroundColor": "#1C252E",
+            "imageWidth": 200,
+            "resizeMode": "contain"
+          }
         }
       ],
       [
