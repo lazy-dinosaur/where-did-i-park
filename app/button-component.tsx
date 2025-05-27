@@ -11,7 +11,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
-import { LinearGradient } from "expo-linear-gradient";
 
 const ButtonComponent = ({
   ref,
@@ -50,31 +49,26 @@ const ButtonComponent = ({
       <TouchableOpacity
         onPress={handleButtonPress}
         disabled={isLoading}
-        style={styles.button}
+        style={[
+          styles.button,
+          { 
+            backgroundColor: isLoading ? colors.textSecondary : colors.brandBlue,
+            shadowColor: colors.brandBlue,
+          }
+        ]}
         activeOpacity={0.8}
       >
-        <LinearGradient
-          colors={
-            isLoading
-              ? ["#95a5a6", "#7f8c8d"]
-              : isDark
-                ? ["#007AFF", "#0056CC", "#003D99"]
-                : ["#007AFF", "#0064FF", "#0080FF"]
-          }
-          style={styles.gradientButton}
-        >
-          {isLoading ? (
-            <View style={styles.loadingContent}>
-              <ActivityIndicator color="white" size="small" />
-              <Text style={styles.loadingText}>기록 중...</Text>
-            </View>
-          ) : (
-            <View style={styles.buttonContent}>
-              <Text style={styles.buttonIcon}>📸</Text>
-              <Text style={styles.buttonText}>주차 기록하기</Text>
-            </View>
-          )}
-        </LinearGradient>
+        {isLoading ? (
+          <View style={styles.loadingContent}>
+            <ActivityIndicator color="white" size="small" />
+            <Text style={styles.loadingText}>기록 중...</Text>
+          </View>
+        ) : (
+          <View style={styles.buttonContent}>
+            <Text style={styles.buttonIcon}>📸</Text>
+            <Text style={styles.buttonText}>주차 기록하기</Text>
+          </View>
+        )}
       </TouchableOpacity>
 
       <Text style={[styles.hintText, { color: colors.textSecondary }]}>
@@ -94,24 +88,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button: {
-    borderRadius: 20,
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
-    shadowColor: "#007AFF",
-  },
-  gradientButton: {
     paddingVertical: 18,
-    paddingHorizontal: 40,
-    borderRadius: 20,
+    paddingHorizontal: 32,
+    borderRadius: 16,
     minWidth: 200,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
   buttonContent: {
     flexDirection: "row",
@@ -120,11 +110,11 @@ const styles = StyleSheet.create({
   },
   buttonIcon: {
     fontSize: 20,
-    marginRight: 10,
+    marginRight: 8,
   },
   buttonText: {
     color: "white",
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "600",
   },
   loadingContent: {
@@ -139,9 +129,9 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   hintText: {
-    fontSize: 14,
+    fontSize: 13,
     textAlign: "center",
-    marginTop: 15,
+    marginTop: 12,
     lineHeight: 18,
   },
 });

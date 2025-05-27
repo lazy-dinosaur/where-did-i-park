@@ -14,7 +14,6 @@ import ScreenWrapper from "@/components/screen-wrapper";
 import MemoComponent from "./memo-component";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
-import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Parked() {
   const [image, setImage] = useState(null);
@@ -83,16 +82,25 @@ export default function Parked() {
           style={[
             styles.header,
             {
-              backgroundColor: colors.surface,
               borderBottomColor: colors.border,
             },
           ]}
         >
-          <Text style={[styles.headerTitle, { color: colors.text }]}>
-            🚗 주차 정보
+          <Text
+            style={[
+              styles.headerTitle,
+              { color: isDark ? colors.text : "black" },
+            ]}
+          >
+            주차 정보
           </Text>
           <Text
-            style={[styles.headerSubtitle, { color: colors.textSecondary }]}
+            style={[
+              styles.headerSubtitle,
+              {
+                color: isDark ? colors.textSecondary : "rgba(0,0,0,0.9)",
+              },
+            ]}
           >
             저장된 위치와 메모를 확인하세요
           </Text>
@@ -100,7 +108,7 @@ export default function Parked() {
 
         {/* 콘텐츠 영역 */}
         <ScrollView
-          style={[styles.content, { backgroundColor: colors.surfaceSecondary }]}
+          style={[styles.content]}
           showsVerticalScrollIndicator={false}
         >
           <View style={[styles.section, { backgroundColor: colors.surface }]}>
@@ -126,22 +134,21 @@ export default function Parked() {
         </ScrollView>
 
         {/* 하단 버튼 영역 */}
-        <View
-          style={[
-            styles.bottomContainer,
-            { backgroundColor: colors.surface, borderTopColor: colors.border },
-          ]}
-        >
-          <Pressable onPress={handleFoundCar} style={styles.foundButton}>
-            <LinearGradient
-              colors={isDark 
-                ? ['#28a745', '#20a039', '#17982d']
-                : ['#28a745', '#32d94c', '#4ade80']
-              }
-              style={styles.gradientFoundButton}
-            >
-              <Text style={styles.foundButtonText}>🚗 차를 찾았어요!</Text>
-            </LinearGradient>
+        <View style={[styles.bottomContainer]}>
+          <Pressable
+            onPress={handleFoundCar}
+            style={[
+              styles.foundButton,
+              {
+                backgroundColor: colors.success,
+                shadowColor: colors.success,
+              },
+            ]}
+          >
+            <View style={styles.foundButtonContent}>
+              <Text style={styles.foundButtonIcon}>🚗</Text>
+              <Text style={styles.foundButtonText}>차를 찾았어요!</Text>
+            </View>
           </Pressable>
         </View>
       </View>
@@ -168,17 +175,46 @@ const styles = StyleSheet.create({
     fontWeight: "500",
   },
   header: {
-    paddingVertical: 20,
+    paddingVertical: 10,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    shadowOpacity: 0.1,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+  headerLogo: {
+    alignItems: "center",
+    marginBottom: 15,
+    position: "relative",
+  },
+  headerCar: {
+    width: 40,
+    height: 25,
+    backgroundColor: "#FFD700",
+    borderRadius: 15,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 2,
+    borderColor: "#1E3A8A",
+    marginBottom: 5,
+  },
+  headerCarFace: {
+    fontSize: 12,
+    color: "#1E3A8A",
+    fontWeight: "bold",
+  },
+  headerBubble: {
+    backgroundColor: "#4A90E2",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 15,
+    position: "absolute",
+    top: -25,
+    right: -20,
+  },
+  headerBubbleText: {
+    color: "#FFFFFF",
+    fontSize: 12,
+    fontWeight: "bold",
   },
   headerTitle: {
     fontSize: 24,
@@ -216,27 +252,34 @@ const styles = StyleSheet.create({
   bottomContainer: {
     paddingHorizontal: 20,
     paddingVertical: 20,
-    borderTopWidth: 1,
   },
   foundButton: {
-    borderRadius: 25,
-    shadowColor: '#28a745',
+    paddingVertical: 18,
+    paddingHorizontal: 32,
+    borderRadius: 16,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     shadowOffset: {
       width: 0,
-      height: 8,
+      height: 4,
     },
-    shadowOpacity: 0.3,
-    shadowRadius: 12,
-    elevation: 8,
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    elevation: 6,
   },
-  gradientFoundButton: {
-    paddingVertical: 18,
+  foundButtonContent: {
+    flexDirection: "row",
     alignItems: "center",
-    borderRadius: 25,
+    justifyContent: "center",
+  },
+  foundButtonIcon: {
+    fontSize: 20,
+    marginRight: 8,
   },
   foundButtonText: {
     color: "white",
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: "600",
   },
 });

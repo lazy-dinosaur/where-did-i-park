@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "where-did-i-park",
-    "slug": "where-did-i-park",
+    "name": "잊지마차",
+    "slug": "forget-me-not-car",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "wheredidipark",
+    "scheme": "forgetmenotcar",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
