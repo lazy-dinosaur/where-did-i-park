@@ -1,5 +1,5 @@
 import { getData, storeData } from "@/utils/storage";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   View,
   Pressable,
@@ -8,12 +8,14 @@ import {
   StyleSheet,
   ScrollView,
   Image,
+  BackHandler,
 } from "react-native";
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import ImageComponent from "./image-component";
 import MapComponent from "./map-component";
 import ScreenWrapper from "@/components/screen-wrapper";
 import MemoComponent from "./memo-component";
-import { useRouter } from "expo-router";
+import { useRouter, useFocusEffect } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 
 export default function Parked() {
@@ -35,6 +37,31 @@ export default function Parked() {
     console.log("image", image);
     console.log("location", location);
   }, [image, location]);
+
+  // 뒤로가기 제스처 및 하드웨어 버튼 비활성화
+  useFocusEffect(
+    useCallback(() => {
+      const onBackPress = () => {
+        // 뒤로가기를 완전히 차단하고 대신 안내 메시지 표시
+        Alert.alert(
+          "🚗 주차 정보",
+          "차를 찾으셨나요? '차를 찾았어요!' 버튼을 눌러주세요.",
+          [
+            { text: "확인", style: "default" }
+          ]
+        );
+        return true; // 뒤로가기 동작을 차단
+      };
+
+      // Android 하드웨어 뒤로가기 핸들러 등록
+      const backHandler = BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () => {
+        // 컴포넌트 언마운트 시 핸들러 제거
+        backHandler.remove();
+      };
+    }, [])
+  );
 
   const handleFoundCar = () => {
     Alert.alert(
@@ -76,8 +103,9 @@ export default function Parked() {
   const dynamicStyles = createDynamicStyles(colors, isDark);
 
   return (
-    <ScreenWrapper backgroundColor={colors.background}>
-      <View style={styles.container}>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ScreenWrapper backgroundColor={colors.background}>
+        <View style={styles.container}>
         {/* 헤더 */}
         <View
           style={[
@@ -162,6 +190,7 @@ export default function Parked() {
         </View>
       </View>
     </ScreenWrapper>
+    </GestureHandlerRootView>
   );
 }
 

@@ -51,7 +51,24 @@ export default function RootLayout() {
   }
   return (
     <SafeAreaProvider>
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen
+          name="index"
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+            animation: "slide_from_left",
+          }}
+        />
+        <Stack.Screen
+          name="parked/index"
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+            animation: "slide_from_right",
+          }}
+        />
+      </Stack>
     </SafeAreaProvider>
   );
 }
