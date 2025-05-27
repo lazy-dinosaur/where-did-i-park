@@ -8,6 +8,7 @@ import { Text, View, Pressable, StyleSheet } from "react-native";
 import { useForegroundPermissions } from "expo-location";
 import { useRouter } from "expo-router";
 import { getData } from "@/utils/storage";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function Index() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -16,6 +17,7 @@ export default function Index() {
     useForegroundPermissions();
   const cameraRef = useRef<CameraView>(null);
   const route = useRouter();
+  const { colors, isDark } = useTheme();
   
   useEffect(() => {
     async function checkParked() {
@@ -31,34 +33,35 @@ export default function Index() {
 
   if (!permission || !locationPermission || !loaded) {
     return (
-      <View style={styles.loadingContainer}>
-        <Text style={styles.loadingText}>로딩 중...</Text>
+      <View style={[styles.loadingContainer, { backgroundColor: colors.background }]}>
+        <Text style={[styles.loadingText, { color: colors.textSecondary }]}>로딩 중...</Text>
       </View>
     );
   }
 
   if (!permission.granted || !locationPermission.granted) {
+    const dynamicStyles = createDynamicStyles(colors, isDark);
     return (
-      <View style={styles.permissionContainer}>
-        <View style={styles.permissionContent}>
-          <View style={styles.iconContainer}>
+      <View style={dynamicStyles.permissionContainer}>
+        <View style={dynamicStyles.permissionContent}>
+          <View style={dynamicStyles.iconContainer}>
             <Text style={styles.appIcon}>🚗</Text>
           </View>
           
-          <Text style={styles.appTitle}>어디 주차했지?</Text>
-          <Text style={styles.appSubtitle}>
+          <Text style={[styles.appTitle, { color: colors.text }]}>어디 주차했지?</Text>
+          <Text style={[styles.appSubtitle, { color: colors.textSecondary }]}>
             차량 위치를 쉽게 기억하고 찾아보세요
           </Text>
 
           <View style={styles.permissionSection}>
             {!permission.granted && (
-              <View style={styles.permissionItem}>
-                <View style={styles.permissionIconBg}>
+              <View style={[styles.permissionItem, { backgroundColor: colors.surfaceSecondary }]}>
+                <View style={[styles.permissionIconBg, { backgroundColor: colors.surface }]}>
                   <Text style={styles.permissionIcon}>📷</Text>
                 </View>
                 <View style={styles.permissionTextContainer}>
-                  <Text style={styles.permissionTitle}>카메라 권한</Text>
-                  <Text style={styles.permissionDescription}>
+                  <Text style={[styles.permissionTitle, { color: colors.text }]}>카메라 권한</Text>
+                  <Text style={[styles.permissionDescription, { color: colors.textSecondary }]}>
                     주차 위치 사진을 촬영하기 위해 필요합니다
                   </Text>
                 </View>
@@ -66,13 +69,13 @@ export default function Index() {
             )}
 
             {!locationPermission.granted && (
-              <View style={styles.permissionItem}>
-                <View style={styles.permissionIconBg}>
+              <View style={[styles.permissionItem, { backgroundColor: colors.surfaceSecondary }]}>
+                <View style={[styles.permissionIconBg, { backgroundColor: colors.surface }]}>
                   <Text style={styles.permissionIcon}>📍</Text>
                 </View>
                 <View style={styles.permissionTextContainer}>
-                  <Text style={styles.permissionTitle}>위치 권한</Text>  
-                  <Text style={styles.permissionDescription}>
+                  <Text style={[styles.permissionTitle, { color: colors.text }]}>위치 권한</Text>  
+                  <Text style={[styles.permissionDescription, { color: colors.textSecondary }]}>
                     정확한 주차 위치를 저장하기 위해 필요합니다
                   </Text>
                 </View>
@@ -109,13 +112,60 @@ export default function Index() {
   }
 
   return (
-    <ScreenWrapper>
+    <ScreenWrapper backgroundColor={colors.background}>
       <InfoComponent />
       <CameraComponent ref={cameraRef} />
       <ButtonComponent ref={cameraRef} />
     </ScreenWrapper>
   );
 }
+
+const createDynamicStyles = (colors: any, isDark: boolean) => StyleSheet.create({
+  permissionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: isDark 
+      ? 'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)' 
+      : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+    // 그래디언트가 지원되지 않으므로 단색으로 대체
+    backgroundColor: isDark ? '#1a1a2e' : '#667eea',
+  },
+  permissionContent: {
+    backgroundColor: isDark 
+      ? 'rgba(28, 28, 30, 0.95)' 
+      : 'rgba(255, 255, 255, 0.95)',
+    borderRadius: 25,
+    padding: 30,
+    margin: 20,
+    alignItems: 'center',
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: isDark ? 0.5 : 0.25,
+    shadowRadius: 15,
+    elevation: 10,
+  },
+  iconContainer: {
+    width: 80,
+    height: 80,
+    backgroundColor: colors.surface,
+    borderRadius: 40,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 20,
+    shadowColor: colors.shadow,
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: isDark ? 0.3 : 0.15,
+    shadowRadius: 8,
+    elevation: 5,
+  },
+});
 
 const styles = StyleSheet.create({
   loadingContainer: {

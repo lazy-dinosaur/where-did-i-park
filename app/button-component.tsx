@@ -4,6 +4,7 @@ import { getCurrentPositionAsync } from "expo-location";
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
 import { Text, TouchableOpacity, View, StyleSheet, ActivityIndicator } from "react-native";
+import { useTheme } from "@/hooks/use-theme";
 
 const ButtonComponent = ({
   ref,
@@ -12,6 +13,7 @@ const ButtonComponent = ({
 }) => {
   const route = useRouter();
   const [isLoading, setIsLoading] = useState(false);
+  const { colors, isDark } = useTheme();
 
   const handleButtonPress = useCallback(async () => {
     setIsLoading(true);
@@ -38,7 +40,13 @@ const ButtonComponent = ({
       <TouchableOpacity 
         onPress={handleButtonPress}
         disabled={isLoading}
-        style={[styles.button, isLoading && styles.buttonDisabled]}
+        style={[
+          styles.button, 
+          { 
+            backgroundColor: isLoading ? colors.textSecondary : colors.primary,
+            shadowColor: isLoading ? colors.textSecondary : colors.primary,
+          }
+        ]}
         activeOpacity={0.8}
       >
         {isLoading ? (
@@ -54,7 +62,7 @@ const ButtonComponent = ({
         )}
       </TouchableOpacity>
       
-      <Text style={styles.hintText}>
+      <Text style={[styles.hintText, { color: colors.textSecondary }]}>
         탭하여 현재 위치와 사진을 저장하세요
       </Text>
     </View>
@@ -71,11 +79,9 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   button: {
-    backgroundColor: "#007AFF",
     borderRadius: 20,
     paddingVertical: 18,
     paddingHorizontal: 40,
-    shadowColor: "#007AFF",
     shadowOffset: {
       width: 0,
       height: 8,
@@ -84,10 +90,6 @@ const styles = StyleSheet.create({
     shadowRadius: 12,
     elevation: 8,
     minWidth: 200,
-  },
-  buttonDisabled: {
-    backgroundColor: "#95a5a6",
-    shadowColor: "#95a5a6",
   },
   buttonContent: {
     flexDirection: "row",
@@ -116,7 +118,6 @@ const styles = StyleSheet.create({
   },
   hintText: {
     fontSize: 14,
-    color: "#7f8c8d",
     textAlign: "center",
     marginTop: 15,
     lineHeight: 18,

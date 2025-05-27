@@ -1,18 +1,33 @@
 import { View, StyleSheet, Text } from "react-native";
 import { Image } from "expo-image";
+import { useTheme } from "@/hooks/use-theme";
 
 export default function ImageComponent({ url }: { url: string | null }) {
+  const { colors, isDark } = useTheme();
+
   if (!url) {
     return (
-      <View style={[styles.container, styles.placeholderContainer]}>
+      <View
+        style={[
+          styles.container,
+          styles.placeholderContainer,
+          { backgroundColor: colors.surfaceSecondary },
+        ]}
+      >
         <Text style={styles.placeholderText}>📷</Text>
-        <Text style={styles.placeholderSubText}>이미지 로딩 중...</Text>
+        <Text
+          style={[styles.placeholderSubText, { color: colors.textSecondary }]}
+        >
+          이미지 로딩 중...
+        </Text>
       </View>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, { backgroundColor: colors.surfaceSecondary }]}
+    >
       <Image
         source={{ uri: url }}
         style={styles.image}
@@ -25,7 +40,7 @@ export default function ImageComponent({ url }: { url: string | null }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 200,
+    height: 300,
     marginHorizontal: 20,
     marginBottom: 20,
     borderRadius: 15,
@@ -38,7 +53,6 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 5,
-    backgroundColor: "#f8f9fa",
   },
   image: {
     width: "100%",
@@ -47,7 +61,6 @@ const styles = StyleSheet.create({
   placeholderContainer: {
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#e9ecef",
   },
   placeholderText: {
     fontSize: 40,
@@ -55,7 +68,6 @@ const styles = StyleSheet.create({
   },
   placeholderSubText: {
     fontSize: 14,
-    color: "#6c757d",
     fontWeight: "500",
   },
 });

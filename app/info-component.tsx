@@ -1,11 +1,14 @@
 import { StyleSheet, View, Text } from "react-native";
+import { useTheme } from "@/hooks/use-theme";
 
 const InfoComponent = () => {
+  const { colors, isDark } = useTheme();
+
   return (
     <View style={styles.container}>
-      <View style={styles.textContainer}>
-        <Text style={styles.mainText}>📸 주차 위치 기록</Text>
-        <Text style={styles.subText}>
+      <View style={[styles.textContainer, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.mainText, { color: colors.text }]}>📸 주차 위치 기록</Text>
+        <Text style={[styles.subText, { color: colors.textSecondary }]}>
           주차 위치를 기억할 수 있는 사진을 찍어 저장하세요
         </Text>
       </View>
@@ -23,7 +26,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   textContainer: {
-    backgroundColor: '#f8f9fa',
     borderRadius: 15,
     padding: 15,
     alignItems: 'center',
@@ -39,13 +41,11 @@ const styles = StyleSheet.create({
   mainText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#2c3e50',
     marginBottom: 5,
     textAlign: 'center',
   },
   subText: {
     fontSize: 14,
-    color: '#7f8c8d',
     textAlign: "center",
     lineHeight: 18,
   },

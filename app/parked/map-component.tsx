@@ -1,9 +1,16 @@
 import { LocationObject } from "expo-location";
-import { TouchableOpacity, Text, View, StyleSheet, Dimensions } from "react-native";
+import {
+  TouchableOpacity,
+  Text,
+  View,
+  StyleSheet,
+  Dimensions,
+} from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import { useMapController } from "@/hooks/use-map-controller";
+import { useTheme } from "@/hooks/use-theme";
 
-const { width } = Dimensions.get('window');
+const { width } = Dimensions.get("window");
 
 const MapComponent = ({ location }: { location: LocationObject | null }) => {
   const {
@@ -16,15 +23,26 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
     isCameraUpdatePaused,
   } = useMapController({ parkedLocation: location });
 
+  const { colors, isDark } = useTheme();
+
   // 로딩 상태 또는 위치 없음
   if (!location) {
     return (
-      <View style={styles.placeholderContainer}>
+      <View
+        style={[
+          styles.placeholderContainer,
+          { backgroundColor: colors.surfaceSecondary },
+        ]}
+      >
         <Text style={styles.placeholderIcon}>🗺️</Text>
-        <Text style={styles.placeholderText}>위치 정보 로딩 중...</Text>
+        <Text style={[styles.placeholderText, { color: colors.textSecondary }]}>
+          위치 정보 로딩 중...
+        </Text>
       </View>
     );
   }
+
+  const dynamicStyles = createDynamicStyles(colors, isDark);
 
   // 초기 지역 설정 (주차 위치 기준)
   const initialRegion = {
@@ -49,7 +67,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
         onMapReady={handleMapReady}
-        mapType="standard"
+        mapType={isDark ? "mutedStandard" : "standard"}
         showsPointsOfInterest={true}
         showsBuildings={true}
         showsTraffic={false}
@@ -71,8 +89,10 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
         style={[
           styles.controlButton,
           {
-            backgroundColor: isCameraUpdatePaused ? "#FF6B6B" : "#007AFF",
-          }
+            backgroundColor: isCameraUpdatePaused
+              ? colors.warning
+              : colors.primary,
+          },
         ]}
         onPress={manualFitToCoordinates}
         disabled={isCameraUpdatePaused}
@@ -83,14 +103,14 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
       </TouchableOpacity>
 
       {/* 정보 카드 */}
-      <View style={styles.infoCard}>
-        <Text style={styles.infoText}>
+      <View style={[styles.infoCard, { backgroundColor: colors.surface }]}>
+        <Text style={[styles.infoText, { color: colors.text }]}>
           📍 위도: {location.coords.latitude.toFixed(6)}
         </Text>
-        <Text style={styles.infoText}>
+        <Text style={[styles.infoText, { color: colors.text }]}>
           📍 경도: {location.coords.longitude.toFixed(6)}
         </Text>
-        <Text style={styles.accuracyText}>
+        <Text style={[styles.accuracyText, { color: colors.textSecondary }]}>
           정확도: ±{location.coords.accuracy?.toFixed(0)}m
         </Text>
       </View>
@@ -99,6 +119,11 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
 };
 
 export default MapComponent;
+
+const createDynamicStyles = (colors: any, isDark: boolean) =>
+  StyleSheet.create({
+    // 동적 스타일은 여기에 추가 가능
+  });
 
 const styles = StyleSheet.create({
   container: {
@@ -126,7 +151,6 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 20,
     borderRadius: 15,
-    backgroundColor: "#e9ecef",
     justifyContent: "center",
     alignItems: "center",
     shadowColor: "#000",
@@ -144,7 +168,6 @@ const styles = StyleSheet.create({
   },
   placeholderText: {
     fontSize: 16,
-    color: "#6c757d",
     fontWeight: "500",
   },
   controlButton: {
@@ -169,7 +192,6 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 15,
     left: 15,
-    backgroundColor: "rgba(255, 255, 255, 0.95)",
     paddingHorizontal: 12,
     paddingVertical: 8,
     borderRadius: 10,
@@ -181,13 +203,11 @@ const styles = StyleSheet.create({
   },
   infoText: {
     fontSize: 12,
-    color: "#2c3e50",
     fontWeight: "500",
     marginBottom: 2,
   },
   accuracyText: {
     fontSize: 11,
-    color: "#7f8c8d",
     fontWeight: "400",
   },
 });
