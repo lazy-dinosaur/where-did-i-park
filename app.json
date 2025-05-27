@@ -33,13 +33,7 @@
           "image": "./assets/images/잊지마차.png",
           "imageWidth": 200,
           "resizeMode": "contain",
-          "backgroundColor": "#E3F2FD",
-          "dark": {
-            "image": "./assets/images/잊지마차.png",
-            "backgroundColor": "#1C252E",
-            "imageWidth": 200,
-            "resizeMode": "contain"
-          }
+          "backgroundColor": "#E3F2FD"
         }
       ],
       [
