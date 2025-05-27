@@ -7,17 +7,10 @@ const InfoComponent = () => {
   return (
     <View style={styles.container}>
       <View style={[styles.textContainer]}>
-        <Text
-          style={[styles.mainText, { color: isDark ? colors.text : "black" }]}
-        >
+        <Text style={[styles.mainText, { color: colors.text }]}>
           📸 주차 위치 기록
         </Text>
-        <Text
-          style={[
-            styles.subText,
-            { color: isDark ? colors.textSecondary : "rgba(0,0,0,0.9)" },
-          ]}
-        >
+        <Text style={[styles.subText, { color: colors.textSecondary }]}>
           주차 위치를 기억할 수 있는 사진을 찍어 저장하세요
         </Text>
       </View>
@@ -32,19 +25,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     height: "12%",
-    paddingHorizontal: 20,
   },
   textContainer: {
-    borderRadius: 20,
-    padding: 20,
+    paddingVertical: 25,
+    paddingHorizontal: 20,
     alignItems: "center",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
   },
   miniLogo: {
     marginBottom: 10,

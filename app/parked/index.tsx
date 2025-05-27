@@ -200,14 +200,6 @@ const styles = StyleSheet.create({
   header: {
     paddingVertical: 25,
     paddingHorizontal: 20,
-    borderBottomWidth: 1,
-    shadowColor: "#1E3A8A",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
     elevation: 5,
     alignItems: "center",
   },

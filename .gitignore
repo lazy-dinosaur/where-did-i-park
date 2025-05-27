@@ -39,3 +39,6 @@ yarn-error.*
 app-example
 .aider*
 .env
+
+android/
+andriod/*
