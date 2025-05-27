@@ -14,6 +14,7 @@ import ScreenWrapper from "@/components/screen-wrapper";
 import MemoComponent from "./memo-component";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Parked() {
   const [image, setImage] = useState(null);
@@ -131,8 +132,16 @@ export default function Parked() {
             { backgroundColor: colors.surface, borderTopColor: colors.border },
           ]}
         >
-          <Pressable onPress={handleFoundCar} style={dynamicStyles.foundButton}>
-            <Text style={styles.foundButtonText}>🚗 차를 찾았어요!</Text>
+          <Pressable onPress={handleFoundCar} style={styles.foundButton}>
+            <LinearGradient
+              colors={isDark 
+                ? ['#28a745', '#20a039', '#17982d']
+                : ['#28a745', '#32d94c', '#4ade80']
+              }
+              style={styles.gradientFoundButton}
+            >
+              <Text style={styles.foundButtonText}>🚗 차를 찾았어요!</Text>
+            </LinearGradient>
           </Pressable>
         </View>
       </View>
@@ -142,20 +151,7 @@ export default function Parked() {
 
 const createDynamicStyles = (colors: any, isDark: boolean) =>
   StyleSheet.create({
-    foundButton: {
-      backgroundColor: colors.success,
-      borderRadius: 25,
-      paddingVertical: 18,
-      alignItems: "center",
-      shadowColor: colors.success,
-      shadowOffset: {
-        width: 0,
-        height: 8,
-      },
-      shadowOpacity: isDark ? 0.5 : 0.3,
-      shadowRadius: 12,
-      elevation: 8,
-    },
+    // 필요시 동적 스타일 추가
   });
 
 const styles = StyleSheet.create({
@@ -221,6 +217,22 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 20,
     borderTopWidth: 1,
+  },
+  foundButton: {
+    borderRadius: 25,
+    shadowColor: '#28a745',
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  gradientFoundButton: {
+    paddingVertical: 18,
+    alignItems: "center",
+    borderRadius: 25,
   },
   foundButtonText: {
     color: "white",

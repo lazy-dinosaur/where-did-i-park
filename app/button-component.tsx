@@ -11,6 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
+import { LinearGradient } from "expo-linear-gradient";
 
 const ButtonComponent = ({
   ref,
@@ -19,7 +20,7 @@ const ButtonComponent = ({
 }) => {
   const route = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { colors } = useTheme();
+  const { colors, isDark } = useTheme();
 
   const handleButtonPress = useCallback(async () => {
     setIsLoading(true);
@@ -49,26 +50,31 @@ const ButtonComponent = ({
       <TouchableOpacity
         onPress={handleButtonPress}
         disabled={isLoading}
-        style={[
-          styles.button,
-          {
-            backgroundColor: isLoading ? colors.textSecondary : colors.primary,
-            shadowColor: isLoading ? colors.textSecondary : colors.primary,
-          },
-        ]}
+        style={styles.button}
         activeOpacity={0.8}
       >
-        {isLoading ? (
-          <View style={styles.loadingContent}>
-            <ActivityIndicator color="white" size="small" />
-            <Text style={styles.loadingText}>기록 중...</Text>
-          </View>
-        ) : (
-          <View style={styles.buttonContent}>
-            <Text style={styles.buttonIcon}>📸</Text>
-            <Text style={styles.buttonText}>주차 기록하기</Text>
-          </View>
-        )}
+        <LinearGradient
+          colors={
+            isLoading
+              ? ["#95a5a6", "#7f8c8d"]
+              : isDark
+                ? ["#007AFF", "#0056CC", "#003D99"]
+                : ["#007AFF", "#0064FF", "#0080FF"]
+          }
+          style={styles.gradientButton}
+        >
+          {isLoading ? (
+            <View style={styles.loadingContent}>
+              <ActivityIndicator color="white" size="small" />
+              <Text style={styles.loadingText}>기록 중...</Text>
+            </View>
+          ) : (
+            <View style={styles.buttonContent}>
+              <Text style={styles.buttonIcon}>📸</Text>
+              <Text style={styles.buttonText}>주차 기록하기</Text>
+            </View>
+          )}
+        </LinearGradient>
       </TouchableOpacity>
 
       <Text style={[styles.hintText, { color: colors.textSecondary }]}>
@@ -89,8 +95,6 @@ const styles = StyleSheet.create({
   },
   button: {
     borderRadius: 20,
-    paddingVertical: 18,
-    paddingHorizontal: 40,
     shadowOffset: {
       width: 0,
       height: 8,
@@ -98,7 +102,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3,
     shadowRadius: 12,
     elevation: 8,
+    shadowColor: "#007AFF",
+  },
+  gradientButton: {
+    paddingVertical: 18,
+    paddingHorizontal: 40,
+    borderRadius: 20,
     minWidth: 200,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   buttonContent: {
     flexDirection: "row",

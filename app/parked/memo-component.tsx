@@ -9,6 +9,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
+import { LinearGradient } from "expo-linear-gradient";
 
 export default function MemoComponent() {
   const [memo, setMemo] = useState<string[]>([]);
@@ -131,7 +132,16 @@ export default function MemoComponent() {
             }}
             style={styles.addButton}
           >
-            <Text style={styles.addIcon}>+</Text>
+            <LinearGradient
+              colors={
+                isDark
+                  ? ["#007AFF", "#0056CC", "#003D99"]
+                  : ["#007AFF", "#0064FF", "#0080FF"]
+              }
+              style={styles.gradientAddButton}
+            >
+              <Text style={styles.addIcon}>+</Text>
+            </LinearGradient>
           </Pressable>
         ))}
 
@@ -237,12 +247,9 @@ const createStyles = (colors: any, isDark: boolean) =>
       fontWeight: "600",
     },
     addButton: {
-      backgroundColor: colors.primary,
       width: 44,
       height: 44,
       borderRadius: 22,
-      justifyContent: "center",
-      alignItems: "center",
       shadowColor: colors.primary,
       shadowOffset: {
         width: 0,
@@ -251,6 +258,13 @@ const createStyles = (colors: any, isDark: boolean) =>
       shadowOpacity: isDark ? 0.5 : 0.3,
       shadowRadius: 6,
       elevation: 5,
+    },
+    gradientAddButton: {
+      width: 44,
+      height: 44,
+      borderRadius: 22,
+      justifyContent: "center",
+      alignItems: "center",
     },
     addIcon: {
       fontSize: 24,

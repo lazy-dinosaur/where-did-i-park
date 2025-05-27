@@ -9,6 +9,7 @@ import { useForegroundPermissions } from "expo-location";
 import { useRouter } from "expo-router";
 import { getData } from "@/utils/storage";
 import { useTheme } from "@/hooks/use-theme";
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function Index() {
   const [permission, requestPermission] = useCameraPermissions();
@@ -47,11 +48,16 @@ export default function Index() {
   }
 
   if (!permission.granted || !locationPermission.granted) {
-    const dynamicStyles = createDynamicStyles(colors, isDark);
     return (
-      <View style={dynamicStyles.permissionContainer}>
-        <View style={dynamicStyles.permissionContent}>
-          <View style={dynamicStyles.iconContainer}>
+      <LinearGradient
+        colors={isDark 
+          ? ['#1a1a2e', '#16213e', '#0f3460'] 
+          : ['#667eea', '#764ba2', '#896ed4']
+        }
+        style={styles.permissionContainer}
+      >
+        <View style={[styles.permissionContent, { backgroundColor: isDark ? 'rgba(28, 28, 30, 0.95)' : 'rgba(255, 255, 255, 0.95)' }]}>
+          <View style={[styles.iconContainer, { backgroundColor: colors.surface }]}>
             <Text style={styles.appIcon}>🚗</Text>
           </View>
 
@@ -133,19 +139,29 @@ export default function Index() {
           <View style={styles.buttonContainer}>
             {!permission.granted && (
               <Pressable
-                style={[styles.permissionButton, styles.cameraButton]}
+                style={styles.permissionButton}
                 onPress={requestPermission}
               >
-                <Text style={styles.buttonText}>📷 카메라 권한 허용</Text>
+                <LinearGradient
+                  colors={['#ff6b6b', '#ee5a52', '#e74c3c']}
+                  style={styles.gradientButton}
+                >
+                  <Text style={styles.buttonText}>📷 카메라 권한 허용</Text>
+                </LinearGradient>
               </Pressable>
             )}
 
             {!locationPermission.granted && (
               <Pressable
-                style={[styles.permissionButton, styles.locationButton]}
+                style={styles.permissionButton}
                 onPress={requestLocationPermission}
               >
-                <Text style={styles.buttonText}>📍 위치 권한 허용</Text>
+                <LinearGradient
+                  colors={['#4ecdc4', '#45b7b8', '#26a69a']}
+                  style={styles.gradientButton}
+                >
+                  <Text style={styles.buttonText}>📍 위치 권한 허용</Text>
+                </LinearGradient>
               </Pressable>
             )}
           </View>
@@ -154,7 +170,7 @@ export default function Index() {
             권한은 앱에서만 사용되며 외부로 전송되지 않습니다
           </Text>
         </View>
-      </View>
+      </LinearGradient>
     );
   }
 
@@ -169,47 +185,7 @@ export default function Index() {
 
 const createDynamicStyles = (colors: any, isDark: boolean) =>
   StyleSheet.create({
-    permissionContainer: {
-      flex: 1,
-      justifyContent: "center",
-      alignItems: "center",
-      // 그래디언트가 지원되지 않으므로 단색으로 대체
-      backgroundColor: isDark ? "#1a1a2e" : "#667eea",
-    },
-    permissionContent: {
-      backgroundColor: isDark
-        ? "rgba(28, 28, 30, 0.95)"
-        : "rgba(255, 255, 255, 0.95)",
-      borderRadius: 25,
-      padding: 30,
-      margin: 20,
-      alignItems: "center",
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 10,
-      },
-      shadowOpacity: isDark ? 0.5 : 0.25,
-      shadowRadius: 15,
-      elevation: 10,
-    },
-    iconContainer: {
-      width: 80,
-      height: 80,
-      backgroundColor: colors.surface,
-      borderRadius: 40,
-      justifyContent: "center",
-      alignItems: "center",
-      marginBottom: 20,
-      shadowColor: colors.shadow,
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: isDark ? 0.3 : 0.15,
-      shadowRadius: 8,
-      elevation: 5,
-    },
+    // 동적 스타일이 필요한 경우 여기에 추가
   });
 
 const styles = StyleSheet.create({
@@ -228,7 +204,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#667eea",
   },
   permissionContent: {
     backgroundColor: "rgba(255, 255, 255, 0.95)",
@@ -331,9 +306,6 @@ const styles = StyleSheet.create({
   },
   permissionButton: {
     borderRadius: 15,
-    paddingVertical: 18,
-    paddingHorizontal: 24,
-    alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -342,6 +314,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 8,
     elevation: 5,
+  },
+  gradientButton: {
+    paddingVertical: 18,
+    paddingHorizontal: 24,
+    alignItems: "center",
+    borderRadius: 15,
   },
   cameraButton: {
     backgroundColor: "#ff6b6b",
