@@ -1,14 +1,25 @@
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet } from "react-native";
+import { StyleSheet, StatusBar } from "react-native";
 
 export default function ScreenWrapper({
   children,
+  backgroundColor = "#fff",
 }: {
   children: React.ReactNode;
+  backgroundColor?: string;
 }) {
-  return <SafeAreaView style={styles.container}>{children}</SafeAreaView>;
+  return (
+    <>
+      <StatusBar barStyle="dark-content" backgroundColor={backgroundColor} />
+      <SafeAreaView style={[styles.container, { backgroundColor }]}>
+        {children}
+      </SafeAreaView>
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#fff", paddingHorizontal: 10 },
+  container: { 
+    flex: 1,
+  },
 });
