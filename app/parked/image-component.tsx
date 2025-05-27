@@ -4,7 +4,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { useState } from "react";
 
 export default function ImageComponent({ url }: { url: string | null }) {
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
   const [showFullscreen, setShowFullscreen] = useState(false);
 
   if (!url) {

@@ -16,7 +16,6 @@ import { calculateDistance } from "@/utils/libs";
 const MapComponent = ({ location }: { location: LocationObject | null }) => {
   const {
     mapRef,
-    parkedLocation,
     userLocation,
     handleMapReady,
     handleTouchStart,
@@ -31,14 +30,14 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
   // 거리 계산
   const getDistance = () => {
     if (!location || !userLocation) return null;
-    
+
     const distance = calculateDistance(
       userLocation.coords.latitude,
       userLocation.coords.longitude,
       location.coords.latitude,
-      location.coords.longitude
+      location.coords.longitude,
     );
-    
+
     if (distance < 1000) {
       return `${Math.round(distance)}m`;
     } else {

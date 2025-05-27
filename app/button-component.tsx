@@ -3,7 +3,13 @@ import { CameraView } from "expo-camera";
 import { getCurrentPositionAsync } from "expo-location";
 import { useRouter } from "expo-router";
 import { useCallback, useState } from "react";
-import { Text, TouchableOpacity, View, StyleSheet, ActivityIndicator } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  ActivityIndicator,
+} from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 
 const ButtonComponent = ({
@@ -13,7 +19,7 @@ const ButtonComponent = ({
 }) => {
   const route = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const { colors, isDark } = useTheme();
+  const { colors } = useTheme();
 
   const handleButtonPress = useCallback(async () => {
     setIsLoading(true);
@@ -22,7 +28,10 @@ const ButtonComponent = ({
       const location = await getCurrentPositionAsync();
       const { uri } = picture!;
       const image = await storeData({ key: "image", value: uri });
-      const locationData = await storeData({ key: "location", value: location });
+      const locationData = await storeData({
+        key: "location",
+        value: location,
+      });
       if (image && locationData) {
         route.push("/parked");
       } else {
@@ -37,15 +46,15 @@ const ButtonComponent = ({
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity 
+      <TouchableOpacity
         onPress={handleButtonPress}
         disabled={isLoading}
         style={[
-          styles.button, 
-          { 
+          styles.button,
+          {
             backgroundColor: isLoading ? colors.textSecondary : colors.primary,
             shadowColor: isLoading ? colors.textSecondary : colors.primary,
-          }
+          },
         ]}
         activeOpacity={0.8}
       >
@@ -61,7 +70,7 @@ const ButtonComponent = ({
           </View>
         )}
       </TouchableOpacity>
-      
+
       <Text style={[styles.hintText, { color: colors.textSecondary }]}>
         탭하여 현재 위치와 사진을 저장하세요
       </Text>
