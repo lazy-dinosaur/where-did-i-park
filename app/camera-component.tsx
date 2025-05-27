@@ -19,29 +19,39 @@ const CameraComponent = ({
 
   return (
     <View style={styles.container}>
-      <CameraView 
-        style={styles.camera} 
-        zoom={zoom} 
-        ref={ref} 
+      <CameraView
+        style={styles.camera}
+        zoom={zoom}
+        ref={ref}
         autofocus="on"
         enableTorch={false}
       />
-      
+
       {/* 카메라 오버레이 */}
       <View style={styles.overlay}>
         {/* 그리드 라인 */}
         <View style={styles.gridContainer}>
           {/* 수직선들 */}
-          <View style={[styles.gridLine, styles.verticalLine, { left: '33.33%' }]} />
-          <View style={[styles.gridLine, styles.verticalLine, { left: '66.66%' }]} />
+          <View
+            style={[styles.gridLine, styles.verticalLine, { left: "33.33%" }]}
+          />
+          <View
+            style={[styles.gridLine, styles.verticalLine, { left: "66.66%" }]}
+          />
           {/* 수평선들 */}
-          <View style={[styles.gridLine, styles.horizontalLine, { top: '33.33%' }]} />
-          <View style={[styles.gridLine, styles.horizontalLine, { top: '66.66%' }]} />
+          <View
+            style={[styles.gridLine, styles.horizontalLine, { top: "33.33%" }]}
+          />
+          <View
+            style={[styles.gridLine, styles.horizontalLine, { top: "66.66%" }]}
+          />
         </View>
 
         {/* 가이드 텍스트 */}
         <View style={styles.guideContainer}>
-          <Text style={styles.guideText}>차량과 주변 환경이 잘 보이도록 촬영하세요</Text>
+          <Text style={styles.guideText}>
+            주차 위치를 기억할 수 있는 사진을 촬영하세요
+          </Text>
         </View>
 
         {/* 줌 컨트롤 */}
@@ -49,13 +59,13 @@ const CameraComponent = ({
           <Pressable onPress={handleZoomOut} style={styles.zoomButton}>
             <Text style={styles.zoomButtonText}>-</Text>
           </Pressable>
-          
+
           <View style={styles.zoomDisplay}>
             <Text style={styles.zoomText}>
-              {zoom === 0 ? '1x' : `${(1 + zoom).toFixed(1)}x`}
+              {zoom === 0 ? "1x" : `${(1 + zoom).toFixed(1)}x`}
             </Text>
           </View>
-          
+
           <Pressable onPress={handleZoomIn} style={styles.zoomButton}>
             <Text style={styles.zoomButtonText}>+</Text>
           </Pressable>
