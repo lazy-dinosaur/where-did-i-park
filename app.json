@@ -4,7 +4,7 @@
     "slug": "forget-me-not-car",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/잊지마차.png",
+    "icon": "./assets/images/잊지마차-logo.png",
     "scheme": "forgetmenotcar",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -14,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/잊지마차.png",
+        "foregroundImage": "./assets/images/잊지마차-logo.png",
         "backgroundColor": "#4A90E2"
       },
       "config": {
