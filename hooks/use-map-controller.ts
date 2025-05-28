@@ -65,8 +65,9 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
   // 카메라 업데이트 함수
   const updateCamera = useCallback(
     async (animated = false) => {
+      // UI 쓰레드 문제 방지를 위한 추가 검사
       const map = safeMapRef();
-      if (!map || !userLocation || !parkedLocation) return;
+      if (!map || !userLocation || !parkedLocation || !isMountedRef.current) return;
 
       try {
         const centerPoint = getMiddlePoint(userLocation, parkedLocation);
@@ -75,17 +76,33 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
             ? deviceMotionHeading || 0
             : heading?.trueHeading || 0;
 
-        const curCamera = await map.getCamera();
+        // 카메라 정보 가져오기 전 추가 마운트 상태 확인
+        if (!isMountedRef.current) return;
+        
+        let curCamera;
+        try {
+          curCamera = await map.getCamera();
+        } catch (cameraError) {
+          console.warn("카메라 정보 가져오기 실패:", cameraError);
+          return; // 카메라 정보를 가져올 수 없으면 업데이트 중단
+        }
+        
+        // 마운트 상태 재확인
+        if (!isMountedRef.current) return;
+        
         const newCamera = {
           ...curCamera,
           center: centerPoint,
           heading: currentHeading,
         };
 
+        // 카메라 업데이트 전 최종 확인
+        if (!isMountedRef.current || !map) return;
+        
         if (animated) {
           map.animateCamera(newCamera, { duration: 500 });
         } else {
-          // 실시간 업데이트의 경우 duration을 0으로 설정하여 지연 없이 바로 적용
+          // 실시간 업데이트는 setCamera 사용 (더 효율적)
           map.setCamera(newCamera);
         }
       } catch (error) {
@@ -285,35 +302,51 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
 
   // 부드러운 헤딩 업데이트 함수
   const updateSmoothHeading = useCallback(() => {
-    if (!isMountedRef.current) return;
-
-    const now = Date.now();
-    // 60fps에 맞춰 업데이트 (약 16.7ms 간격)
-    if (now - lastUpdateTimeRef.current >= 16.7) {
-      lastUpdateTimeRef.current = now;
-
-      // 현재 heading에서 목표 heading으로 부드럽게 이동
-      const diff = targetHeadingRef.current - currentHeadingRef.current;
-
-      // 각도 차이가 180도 이상일 때 처리 (예: 350도 -> 10도)
-      let adjustedDiff = diff;
-      if (Math.abs(diff) > 180) {
-        adjustedDiff = diff > 0 ? diff - 360 : diff + 360;
-      }
-
-      // 부드러운 보간 (이동 속도 조절)
-      // 0.15는 부드러움의 정도를 조절하는 계수 (값이 클수록 빠르게 따라감)
-      currentHeadingRef.current += adjustedDiff * 0.15;
-
-      // 360도 범위 내로 유지
-      if (currentHeadingRef.current < 0) currentHeadingRef.current += 360;
-      if (currentHeadingRef.current >= 360) currentHeadingRef.current -= 360;
-
-      // 상태 업데이트 (UI 렌더링용)
-      setDeviceMotionHeading(+currentHeadingRef.current.toFixed(1));
+    // 컴포넌트가 언마운트되었거나 타겟 헤딩이 유효하지 않으면 중단
+    if (!isMountedRef.current || typeof targetHeadingRef.current !== 'number') {
+      return;
     }
-
-    animationFrameIdRef.current = requestAnimationFrame(updateSmoothHeading);
+    
+    try {
+      const now = Date.now();
+      // 90fps에 맞춰 업데이트 (약 11.11ms 간격)
+      if (now - lastUpdateTimeRef.current >= 11.11) {
+        lastUpdateTimeRef.current = now;
+        
+        // 현재 heading에서 목표 heading으로 부드럽게 이동
+        const diff = targetHeadingRef.current - currentHeadingRef.current;
+        
+        // 각도 차이가 180도 이상일 때 처리 (예: 350도 -> 10도)
+        let adjustedDiff = diff;
+        if (Math.abs(diff) > 180) {
+          adjustedDiff = diff > 0 ? diff - 360 : diff + 360;
+        }
+        
+        // 부드러운 보간 (이동 속도 조절)
+        // 90fps에 맞춘 보간 계수 (0.1 ~ 0.12 정도가 적당)
+        currentHeadingRef.current += adjustedDiff * 0.12;
+        
+        // 360도 범위 내로 유지
+        if (currentHeadingRef.current < 0) currentHeadingRef.current += 360;
+        if (currentHeadingRef.current >= 360) currentHeadingRef.current -= 360;
+        
+        // 상태 업데이트 (UI 렌더링용) - 마운트 상태 한번 더 확인
+        if (isMountedRef.current) {
+          setDeviceMotionHeading(+currentHeadingRef.current.toFixed(1));
+        }
+      }
+      
+      // 컴포넌트가 언마운트되지 않았을 때만 다음 프레임 요청
+      if (isMountedRef.current) {
+        animationFrameIdRef.current = requestAnimationFrame(updateSmoothHeading);
+      }
+    } catch (error) {
+      console.warn("헤딩 업데이트 오류:", error);
+      // 오류 발생 시에도 애니메이션 계속 유지 (마운트 상태 확인)
+      if (isMountedRef.current) {
+        animationFrameIdRef.current = requestAnimationFrame(updateSmoothHeading);
+      }
+    }
   }, []);
 
   // 초기 설정
@@ -322,26 +355,40 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
     lastUpdateTimeRef.current = Date.now();
 
     startTracking();
-    DeviceMotion.setUpdateInterval(16);
+    // DeviceMotion 업데이트 간격을 11ms로 설정 (약 90Hz)
+    DeviceMotion.setUpdateInterval(11);
 
     let deviceMotionSubscription = DeviceMotion.addListener((motionData) => {
+      // 마운트 상태 확인
       if (!isMountedRef.current) return;
 
-      if (
-        !motionData?.rotation?.alpha ||
-        typeof motionData.rotation.alpha !== "number"
-      ) {
-        return;
+      // null 체크 강화
+      if (!motionData || !motionData.rotation) return;
+      
+      try {
+        if (
+          !motionData.rotation.alpha ||
+          typeof motionData.rotation.alpha !== "number" ||
+          isNaN(motionData.rotation.alpha)
+        ) {
+          return;
+        }
+
+        const { alpha } = motionData.rotation;
+        let calculatedHeading = 360 - (alpha * 180) / Math.PI;
+
+        // 유효한 값인지 확인
+        if (isNaN(calculatedHeading)) return;
+
+        if (calculatedHeading < 0) calculatedHeading += 360;
+        if (calculatedHeading > 360) calculatedHeading -= 360;
+
+        // 계산된 헤딩 값을 타겟 헤딩으로 설정 (직접 상태를 업데이트하지 않음)
+        targetHeadingRef.current = calculatedHeading;
+      } catch (error) {
+        console.warn("DeviceMotion 처리 오류:", error);
+        // 오류가 발생해도 리스너는 계속 유지
       }
-
-      const { alpha } = motionData.rotation;
-      let calculatedHeading = 360 - (alpha * 180) / Math.PI;
-
-      if (calculatedHeading < 0) calculatedHeading += 360;
-      if (calculatedHeading > 360) calculatedHeading -= 360;
-
-      // 계산된 헤딩 값을 타겟 헤딩으로 설정 (직접 상태를 업데이트하지 않음)
-      targetHeadingRef.current = calculatedHeading;
     });
 
     // 부드러운 헤딩 업데이트 시작
