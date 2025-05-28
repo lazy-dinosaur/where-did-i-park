@@ -38,6 +38,12 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
   const dragTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const isMountedRef = useRef(true);
 
+  // 부드러운 헤딩 보간을 위한 Refs
+  const currentHeadingRef = useRef<number>(0);
+  const targetHeadingRef = useRef<number>(0);
+  const lastUpdateTimeRef = useRef<number>(0);
+  const animationFrameIdRef = useRef<number | null>(null);
+
   // 안전한 mapRef 접근 함수
   const safeMapRef = useCallback(() => {
     if (!isMountedRef.current || !mapReady || !mapRef.current) {
@@ -79,6 +85,7 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
         if (animated) {
           map.animateCamera(newCamera, { duration: 500 });
         } else {
+          // 실시간 업데이트의 경우 duration을 0으로 설정하여 지연 없이 바로 적용
           map.setCamera(newCamera);
         }
       } catch (error) {
@@ -276,9 +283,43 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
     }
   }, []);
 
+  // 부드러운 헤딩 업데이트 함수
+  const updateSmoothHeading = useCallback(() => {
+    if (!isMountedRef.current) return;
+
+    const now = Date.now();
+    // 60fps에 맞춰 업데이트 (약 16.7ms 간격)
+    if (now - lastUpdateTimeRef.current >= 16.7) {
+      lastUpdateTimeRef.current = now;
+
+      // 현재 heading에서 목표 heading으로 부드럽게 이동
+      const diff = targetHeadingRef.current - currentHeadingRef.current;
+
+      // 각도 차이가 180도 이상일 때 처리 (예: 350도 -> 10도)
+      let adjustedDiff = diff;
+      if (Math.abs(diff) > 180) {
+        adjustedDiff = diff > 0 ? diff - 360 : diff + 360;
+      }
+
+      // 부드러운 보간 (이동 속도 조절)
+      // 0.15는 부드러움의 정도를 조절하는 계수 (값이 클수록 빠르게 따라감)
+      currentHeadingRef.current += adjustedDiff * 0.15;
+
+      // 360도 범위 내로 유지
+      if (currentHeadingRef.current < 0) currentHeadingRef.current += 360;
+      if (currentHeadingRef.current >= 360) currentHeadingRef.current -= 360;
+
+      // 상태 업데이트 (UI 렌더링용)
+      setDeviceMotionHeading(+currentHeadingRef.current.toFixed(1));
+    }
+
+    animationFrameIdRef.current = requestAnimationFrame(updateSmoothHeading);
+  }, []);
+
   // 초기 설정
   useEffect(() => {
     isMountedRef.current = true;
+    lastUpdateTimeRef.current = Date.now();
 
     startTracking();
     DeviceMotion.setUpdateInterval(16);
@@ -299,10 +340,12 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       if (calculatedHeading < 0) calculatedHeading += 360;
       if (calculatedHeading > 360) calculatedHeading -= 360;
 
-      if (isMountedRef.current) {
-        setDeviceMotionHeading(+calculatedHeading.toFixed(1));
-      }
+      // 계산된 헤딩 값을 타겟 헤딩으로 설정 (직접 상태를 업데이트하지 않음)
+      targetHeadingRef.current = calculatedHeading;
     });
+
+    // 부드러운 헤딩 업데이트 시작
+    animationFrameIdRef.current = requestAnimationFrame(updateSmoothHeading);
 
     return () => {
       isMountedRef.current = false;
@@ -310,10 +353,14 @@ export const useMapController = ({ parkedLocation }: UseMapControllerProps) => {
       locationSubscription?.remove();
       headingSubscription?.remove();
       deviceMotionSubscription?.remove();
+
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
       if (dragTimeoutRef.current) clearTimeout(dragTimeoutRef.current);
     };
-  }, [startTracking]);
+  }, [startTracking, updateSmoothHeading]);
   // 초기 지도 핏
   useEffect(() => {
     if (!isMountedRef.current || !mapReady) return;
