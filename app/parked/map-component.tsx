@@ -50,7 +50,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
     };
 
     // iOS에서만 mapType 속성 추가
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
       return {
         ...baseProps,
         mapType: (isDark ? "mutedStandard" : "standard") as MapType,
@@ -77,7 +77,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
     };
 
     // iOS에서만 mapType 속성 추가
-    if (Platform.OS === 'ios') {
+    if (Platform.OS === "ios") {
       return {
         ...baseProps,
         mapType: (isDark ? "mutedStandard" : "standard") as MapType,
@@ -131,9 +131,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
   return (
     <>
       <View style={styles.container}>
-        <MapView
-          {...getMapProps()}
-        >
+        <MapView {...getMapProps()}>
           <Marker
             coordinate={{
               latitude: location.coords.latitude,
@@ -205,9 +203,7 @@ const MapComponent = ({ location }: { location: LocationObject | null }) => {
             { backgroundColor: colors.background },
           ]}
         >
-          <MapView
-            {...getFullscreenMapProps()}
-          >
+          <MapView {...getFullscreenMapProps()}>
             <Marker
               coordinate={{
                 latitude: location.coords.latitude,
@@ -237,20 +233,13 @@ export default MapComponent;
 
 const styles = StyleSheet.create({
   container: {
+    width: "100%",
     height: 300,
-    marginHorizontal: 20,
-    marginBottom: 20,
     borderRadius: 15,
+    borderTopRightRadius: 0,
+    borderTopLeftRadius: 0,
     overflow: "hidden",
     backgroundColor: "#f8f9fa",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 5,
   },
   map: {
     width: "100%",
