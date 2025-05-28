@@ -1,11 +1,11 @@
 {
   "expo": {
     "name": "잊지마차",
-    "slug": "forget-me-not-car",
+    "slug": "no-more-lost-car",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/잊지마차-logo.png",
-    "scheme": "forgetmenotcar",
+    "scheme": "nomorelostcar",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
@@ -19,7 +19,7 @@
       },
       "config": {
         "googleMaps": {
-          "apiKey": "process.env.GOOGLE_MAPS_API_KEY"
+          "apiKey": "AIzaSyCay2DRkWlbBqiy3jyR1upqja-iXX-umIc"
         }
       },
       "edgeToEdgeEnabled": true,
@@ -34,7 +34,7 @@
         "android.permission.ACCESS_COARSE_LOCATION",
         "android.permission.ACCESS_FINE_LOCATION"
       ],
-      "package": "com.blueyetti.forgetmenotcar"
+      "package": "com.blueyetti.nomorelostcar"
     },
     "web": {
       "bundler": "metro",
