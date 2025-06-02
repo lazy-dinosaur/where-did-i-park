@@ -91,7 +91,6 @@ export default function MemoComponent() {
               placeholder="메모를 수정하세요"
               placeholderTextColor={colors.placeholder}
               style={styles.editInput}
-              multiline
             />
           ) : (
             <Pressable
